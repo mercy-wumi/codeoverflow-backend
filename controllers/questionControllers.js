@@ -22,7 +22,7 @@ const getQuestion = async (req, res) => {
 
 // post a question
 const askQuestion = async (req, res) => {
-    const { title, description, tags, selectedImage } = req.body
+    const { title, description, selectedImage } = req.body
     let emptyFields = []
 
     if (!title) {
@@ -31,9 +31,9 @@ const askQuestion = async (req, res) => {
     if (!description) {
         emptyFields.push('description')
     }
-    if (!tags) {
-        emptyFields.push('tags')
-    }
+    // if (!tags) {
+    //     emptyFields.push('tags')
+    // }
     if (emptyFields.length > 0) {
         return res.status(400).json({ error: 'please fill all the fields', emptyFields })
     }
