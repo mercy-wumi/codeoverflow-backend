@@ -9,6 +9,8 @@ const userRoutes = require('./routes/user')
 
 // express app
 const app = express()
+const port = process.env.PORT || 3000;
+
 
 // const corsOptions = {
 //     origin: 'https://codeoverflow.netlify.app',
@@ -31,14 +33,13 @@ app.use((req, res, next) => {
 app.use('/api/questions', questionRoutes)
 app.use('/api/user', userRoutes)
 
-const PORT = process.env.PORT || 3000;
 
 // connect to db
 mongoose.connect(process.env.MONG_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         // listen for requests
-        app.listen(PORT, () => {
-            console.log(`connected to db & listening to port ${PORT}`)
+        app.listen(port, () => {
+            console.log(`connected to db & listening to port ${port}`)
         })
     })
     .catch((err) => {
