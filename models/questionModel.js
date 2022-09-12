@@ -15,21 +15,13 @@ const questionSchema = new Schema({
     selectedImage: {
         type: String
     },
-    tags: [
-        new Schema({
-            id: {
-                type: String,
-                required: true
-            },
-            text: {
-                type: String,
-                required: true
-            }
-        },
-            { _id: false },
-        )
-    ],
-    answers: { type: [String], default: [] }
+    tags: { type: [String], default: [] },
+    postedBy: { type: ObjectId, ref: "User" },
+    // answers: { type: [String], default: [] }
+    answers: [{
+        text: String,
+        postedBy: { type: ObjectId, ref: "User" }
+    }]
 }, { timestamps: true })
 
 module.exports = mongoose.model('Question', questionSchema)

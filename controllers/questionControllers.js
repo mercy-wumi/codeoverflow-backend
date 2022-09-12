@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 // get all questions
 const getQuestions = async (req, res) => {
-    const questions = await Question.find({}).sort({ createdAt: -1 })
+    const questions = await Question.find({}).sort({ createdAt: -1 }).populate("postedBy", "_id username")
     res.status(200).json(questions)
 }
 
@@ -22,7 +22,7 @@ const getQuestion = async (req, res) => {
 
 // post a question
 const askQuestion = async (req, res) => {
-    const { title, description, selectedImage } = req.body
+    const { title, description, selectedImage, tags } = req.body
     let emptyFields = []
 
     if (!title) {
@@ -31,14 +31,14 @@ const askQuestion = async (req, res) => {
     if (!description) {
         emptyFields.push('description')
     }
-    // if (!tags) {
-    //     emptyFields.push('tags')
-    // }
+    if (!tags) {
+        emptyFields.push('tags')
+    }
     if (emptyFields.length > 0) {
         return res.status(400).json({ error: 'please fill all the fields', emptyFields })
     }
     try {
-        const question = await Question.create({ title, description, tags, selectedImage })
+        const question = await Question.create({ title, description, selectedImage, tags, postedBy: req.user })
         res.status(200).json(question)
     }
     catch (err) {
@@ -75,15 +75,38 @@ const updateQuestion = async (req, res) => {
 }
 
 // post a comment / answer a question
+
 const answerQuestion = async (req, res) => {
     const { id } = req.params
-    const { answer } = req.body
-
-    const questionAnswers = await Question.findById(id)
-    questionAnswers.answers.push(answer)
-    const updateQuestionAnswer = await Question.findByIdAndUpdate(id, questionAnswers, { new: true })
-    res.json(updateQuestionAnswer)
+    const answer = {
+        text: req.body.text,
+        postedBy: req.user._id
+    }
+    Question.findByIdAndUpdate(id, {
+        $push: { answers: answer }
+    }, { new: true })
+        .populate("answers.postedBy", "_id username")
+        .populate("postedBy", "_id username")
+        .exec((err, result) => {
+            if (err) {
+                return res.status(400).json({ error: err })
+            }
+            else {
+                res.json(result)
+            }
+        })
 }
+// const answerQuestion = async (req, res) => {
+//     const { id } = req.params
+//     const { answer } = req.body
+//     console.log(req.body)
+
+//     const questionAnswers = await Question.findById(id)
+//     questionAnswers.answers.push(answer)
+//     const updateQuestionAnswer = await Question.findByIdAndUpdate(id, questionAnswers, { new: true })
+//     res.json(updateQuestionAnswer)
+// }
+
 
 module.exports = {
     askQuestion,

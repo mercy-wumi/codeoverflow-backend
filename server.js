@@ -35,7 +35,7 @@ app.use('/api/user', userRoutes)
 mongoose.connect(process.env.MONG_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         // listen for requests
-        app.listen(process.env.PORT, () => {
+        app.listen(process.env.PORT || 3000, () => {
             console.log(`connected to db & listening to port ${process.env.PORT}`)
         })
     })
