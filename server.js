@@ -35,7 +35,7 @@ app.use('/api/user', userRoutes)
 
 
 // connect to db
-mongoose.connect(process.env.MONG_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://mercy:codeoverFLOW@codeoverflow.dzkqbla.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         // listen for requests
         app.listen(port, () => {
