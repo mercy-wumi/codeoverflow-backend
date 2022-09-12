@@ -31,12 +31,14 @@ app.use((req, res, next) => {
 app.use('/api/questions', questionRoutes)
 app.use('/api/user', userRoutes)
 
+const PORT = process.env.PORT || 3000;
+
 // connect to db
 mongoose.connect(process.env.MONG_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         // listen for requests
-        app.listen(process.env.PORT || 3000, () => {
-            console.log(`connected to db & listening to port ${process.env.PORT}`)
+        app.listen(PORT, () => {
+            console.log(`connected to db & listening to port ${PORT}`)
         })
     })
     .catch((err) => {
